@@ -1,4 +1,5 @@
 import { AsciiOcean } from "@/components/ascii-ocean";
+import { SmoothCursor } from "@/components/smooth-cursor";
 import { GitHubIcon, LinkedInIcon } from "@/components/social-icons";
 
 const SOCIAL_LINKS = [
@@ -33,6 +34,8 @@ export default function Home() {
           </a>
         ))}
       </nav>
+
+      <SmoothCursor />
     </main>
   );
 }
