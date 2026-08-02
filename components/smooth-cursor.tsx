@@ -8,7 +8,14 @@ type TrailPoint = {
   time: number;
 };
 
-const CURSOR_RADIUS = 4;
+type DrawBounds = {
+  left: number;
+  top: number;
+  right: number;
+  bottom: number;
+};
+
+const CURSOR_RADIUS = 5;
 const FOLLOW_RATE = 13;
 const TRAIL_LIFETIME = 280;
 const MAX_TRAIL_POINTS = 28;
@@ -30,9 +37,12 @@ export function SmoothCursor() {
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
     const root = document.documentElement;
     const trail: TrailPoint[] = [];
+    canvas.width = 1;
+    canvas.height = 1;
     let enabled = false;
     let hasPosition = false;
     let animationFrame = 0;
+    let drawnBounds: DrawBounds | null = null;
     let lastFrame = performance.now();
     let targetX = 0;
     let targetY = 0;
@@ -40,12 +50,31 @@ export function SmoothCursor() {
     let currentY = 0;
 
     const resize = () => {
+      if (!enabled) return;
       const width = window.innerWidth;
       const height = window.innerHeight;
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const pixelBudgetDpr = Math.sqrt(4_000_000 / (width * height));
+      const dpr = Math.min(
+        window.devicePixelRatio || 1,
+        1.5,
+        Math.max(1, pixelBudgetDpr),
+      );
       canvas.width = Math.round(width * dpr);
       canvas.height = Math.round(height * dpr);
       context.setTransform(dpr, 0, 0, dpr, 0, 0);
+      drawnBounds = null;
+      if (hasPosition) scheduleDraw();
+    };
+
+    const clearDrawnRegion = () => {
+      if (!drawnBounds) return;
+      const padding = 8;
+      const left = Math.max(0, drawnBounds.left - padding);
+      const top = Math.max(0, drawnBounds.top - padding);
+      const right = Math.min(window.innerWidth, drawnBounds.right + padding);
+      const bottom = Math.min(window.innerHeight, drawnBounds.bottom + padding);
+      context.clearRect(left, top, right - left, bottom - top);
+      drawnBounds = null;
     };
 
     const hide = () => {
@@ -55,7 +84,7 @@ export function SmoothCursor() {
       canvas.classList.remove("is-visible");
       cancelAnimationFrame(animationFrame);
       animationFrame = 0;
-      context.clearRect(0, 0, window.innerWidth, window.innerHeight);
+      clearDrawnRegion();
     };
 
     const draw = (now: number) => {
@@ -79,7 +108,7 @@ export function SmoothCursor() {
         trail.shift();
       }
 
-      context.clearRect(0, 0, window.innerWidth, window.innerHeight);
+      clearDrawnRegion();
       context.lineCap = "round";
 
       for (let index = 1; index < trail.length; index += 1) {
@@ -98,6 +127,20 @@ export function SmoothCursor() {
       context.arc(currentX, currentY, CURSOR_RADIUS, 0, Math.PI * 2);
       context.fillStyle = "#fff";
       context.fill();
+
+      let left = currentX;
+      let top = currentY;
+      let right = currentX;
+      let bottom = currentY;
+      for (const point of trail) {
+        left = Math.min(left, point.x);
+        top = Math.min(top, point.y);
+        right = Math.max(right, point.x);
+        bottom = Math.max(bottom, point.y);
+      }
+      drawnBounds = { left, top, right, bottom };
+      root.classList.add("smooth-cursor-enabled");
+      canvas.classList.add("is-visible");
 
       if (distanceToTarget > 0.04 || trail.length > 0) {
         animationFrame = requestAnimationFrame(draw);
@@ -121,8 +164,6 @@ export function SmoothCursor() {
         trail.push({ x: currentX, y: currentY, time: performance.now() });
         hasPosition = true;
       }
-      root.classList.add("smooth-cursor-enabled");
-      canvas.classList.add("is-visible");
       scheduleDraw();
     };
 
@@ -132,7 +173,11 @@ export function SmoothCursor() {
 
       enabled = shouldEnable;
       if (enabled) resize();
-      else hide();
+      else {
+        hide();
+        canvas.width = 1;
+        canvas.height = 1;
+      }
     };
 
     const handleVisibility = () => {

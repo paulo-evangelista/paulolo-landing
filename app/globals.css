@@ -32,7 +32,7 @@ a {
   body,
   a,
   a * {
-    cursor: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2218%22%20height%3D%2218%22%20viewBox%3D%220%200%2018%2018%22%3E%3Ccircle%20cx%3D%229%22%20cy%3D%229%22%20r%3D%224%22%20fill%3D%22white%22%2F%3E%3C%2Fsvg%3E") 9 9, auto;
+    cursor: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2220%22%20height%3D%2220%22%20viewBox%3D%220%200%2020%2020%22%3E%3Ccircle%20cx%3D%2210%22%20cy%3D%2210%22%20r%3D%225%22%20fill%3D%22white%22%20stroke%3D%22black%22%20stroke-width%3D%221%22%2F%3E%3C%2Fsvg%3E") 10 10, auto;
   }
 
   html.smooth-cursor-enabled,
@@ -52,7 +52,7 @@ a {
   height: 100%;
   pointer-events: none;
   opacity: 0;
-  transition: opacity 120ms ease;
+  mix-blend-mode: difference;
 }
 
 .smooth-cursor.is-visible {

@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
 import "./globals.css";
 import ogImage from "./og_image.jpg";
+import Script from "next/script";
 
 const title = "paulolo.com";
 const description = "Watching the ocean go by, one ASCII at a time";
@@ -54,10 +55,19 @@ export const viewport: Viewport = {
   colorScheme: "dark",
 };
 
-export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
+export default function RootLayout({
+  children,
+}: Readonly<{ children: ReactNode }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <Script
+          strategy="afterInteractive"
+          src="https://portal.paulolo.com/edge"
+          data-website-id="0f38fe73-8b48-4173-968c-e031ea0aab44"
+        ></Script>
+        {children}
+      </body>
     </html>
   );
 }
