@@ -73,11 +73,11 @@ a {
 @property --ocean-reveal-radius {
   syntax: "<percentage>";
   inherits: false;
-  initial-value: 0%;
+  initial-value: 28%;
 }
 
 .ascii-ocean {
-  --ocean-reveal-radius: 0%;
+  --ocean-reveal-radius: 28%;
 
   position: absolute;
   z-index: 0;
@@ -88,7 +88,7 @@ a {
   pointer-events: none;
   opacity: 1;
   -webkit-mask-image: radial-gradient(
-    farthest-corner at 100% 100%,
+    ellipse 135% 92% at 50% 125%,
     #000 0 calc(var(--ocean-reveal-radius) - 5.5%),
     rgb(0 0 0 / 96%) calc(var(--ocean-reveal-radius) - 4.2%),
     rgb(0 0 0 / 48%) calc(var(--ocean-reveal-radius) - 2.7%),
@@ -99,7 +99,7 @@ a {
     transparent calc(var(--ocean-reveal-radius) + 5.5%)
   );
   mask-image: radial-gradient(
-    farthest-corner at 100% 100%,
+    ellipse 135% 92% at 50% 125%,
     #000 0 calc(var(--ocean-reveal-radius) - 5.5%),
     rgb(0 0 0 / 96%) calc(var(--ocean-reveal-radius) - 4.2%),
     rgb(0 0 0 / 48%) calc(var(--ocean-reveal-radius) - 2.7%),
@@ -204,11 +204,11 @@ a {
 
 @keyframes ocean-reveal {
   from {
-    --ocean-reveal-radius: 0%;
+    --ocean-reveal-radius: 28%;
   }
 
   to {
-    --ocean-reveal-radius: 114%;
+    --ocean-reveal-radius: 148%;
   }
 }
 
