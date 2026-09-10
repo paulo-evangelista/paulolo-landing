@@ -1,3 +1,4 @@
+import { LiquidDemo } from "@/components/liquid-demo";
 import { AsciiOcean } from "@/components/ascii-ocean";
 import { SmoothCursor } from "@/components/smooth-cursor";
 import { GitHubIcon, LinkedInIcon } from "@/components/social-icons";
@@ -19,6 +20,7 @@ export default function Home() {
   return (
     <main className="landing">
       <AsciiOcean />
+      <LiquidDemo>
 
       <nav className="social-links" aria-label="Social links">
         {SOCIAL_LINKS.map(({ label, href, icon: Icon }) => (
@@ -30,10 +32,11 @@ export default function Home() {
             aria-label={label}
             key={label}
           >
-            <Icon />
+            <span className="social-link-content"><Icon /></span>
           </a>
         ))}
       </nav>
+      </LiquidDemo>
 
       <SmoothCursor />
     </main>
